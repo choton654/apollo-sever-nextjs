@@ -15,12 +15,25 @@ export const resolvers = {
     lyric(parent, args, context) {
       return Lyric.findById({ _id: args.id });
     },
-  },
-  Lyric: {
-    song(parent) {
-      return Song.findById({ _id: parent.song }).populate('song');
+    lyrics() {
+      return Lyric.find({});
     },
   },
+  Song: {
+    lyrics: (song) => {
+      return Song.findLyrics(song.id);
+    },
+  },
+  Lyric: {
+    song: (lyric) => {
+      return Lyric.findById(lyric)
+        .populate('song')
+        .then((lyric) => {
+          return lyric.song;
+        });
+    },
+  },
+
   Mutation: {
     addSong: (parent, { title }, context) => {
       return new Song({ title }).save();
@@ -29,10 +42,13 @@ export const resolvers = {
       return Song.addLyric(songId, content);
     },
     deleteSong: (parent, { songId }, context) => {
-      return Song.remove({ _id: songId });
+      return Song.deleteOne({ _id: songId });
     },
     likeLyric: (parent, { lyricId }, content) => {
       return Lyric.like(lyricId);
+    },
+    deleteLyric: (parent, { lyricId }, content) => {
+      return Lyric.deleteOne({ _id: lyricId });
     },
   },
 };

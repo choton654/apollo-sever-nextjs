@@ -5,9 +5,8 @@ export default function About() {
     <div>
       This is a static page goto{' '}
       <Link href='/'>
-        <a>dynamic</a>
+        <a>dynamic page.</a>
       </Link>{' '}
-      page.
     </div>
   );
 }

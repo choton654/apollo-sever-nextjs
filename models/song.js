@@ -27,6 +27,23 @@ SongSchema.statics.addLyric = function (id, content) {
   });
 };
 
+// SongSchema.statics.deleteLyric = function (lyricId, songId) {
+//   const Lyric = mongoose.model('lyric');
+
+//   return this.findById(songId).then(async (song) => {
+//     if (
+//       song.lyrics.filter((lyric) => lyric._id.toString() === lyricId).length ===
+//       0
+//     ) {
+//       return;
+//     }
+
+//     song.lyrics.pull(lyricId);
+//     await song.save();
+//     return song;
+//   });
+// };
+
 SongSchema.statics.findLyrics = function (id) {
   return this.findById(id)
     .populate('lyrics')

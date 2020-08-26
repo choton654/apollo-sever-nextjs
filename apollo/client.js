@@ -22,6 +22,7 @@ function createApolloClient() {
     ssrMode: typeof window === 'undefined',
     link: createIsomorphLink(),
     cache: new InMemoryCache(),
+    dataIdFromObject: (o) => o.id,
   });
 }
 

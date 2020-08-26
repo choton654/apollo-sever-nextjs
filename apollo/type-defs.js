@@ -13,18 +13,20 @@ export const typeDefs = gql`
     id: ID!
     likes: Int
     content: String
-    song: Song!
+    song: Song
   }
   type Query {
     users: [User!]!
     songs: [Song]
     song(id: ID!): Song
     lyric(id: ID!): Lyric
+    lyrics: [Lyric]
   }
   type Mutation {
-    addSong(title: String!): Song!
-    addLyricToSong(content: String!, songId: ID!): Song!
-    deleteSong(songId: ID!): Song!
-    likeLyric(lyricId: ID!): Lyric!
+    addSong(title: String!): Song
+    addLyricToSong(content: String!, songId: ID!): Song
+    deleteLyric(lyricId: ID!): Song
+    deleteSong(songId: ID!): Song
+    likeLyric(lyricId: ID!): Lyric
   }
 `;
