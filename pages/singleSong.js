@@ -1,21 +1,9 @@
-import { gql, useApolloClient, useQuery } from '@apollo/client';
+import { useApolloClient, useQuery } from '@apollo/client';
 import Link from 'next/link';
 import React from 'react';
 import AddLyric from '../components/AddLyric';
 import LyricList from '../components/LyricList';
-
-const SongDetailsQuery = gql`
-  query SongDetailsQuery($id: ID!) {
-    song(id: $id) {
-      id
-      title
-      lyrics {
-        id
-        content
-      }
-    }
-  }
-`;
+import { SongDetailsQuery } from '../graphql/queries';
 
 function singleSong({ songId }) {
   const { data, loading, error } = useQuery(SongDetailsQuery, {
@@ -23,7 +11,6 @@ function singleSong({ songId }) {
   });
 
   const client = useApolloClient();
-  // console.log(client.extract());
 
   if (loading) return <h4>loading...</h4>;
   if (error) return <h4>{error.message}</h4>;
@@ -31,7 +18,13 @@ function singleSong({ songId }) {
   return (
     <div>
       <Link href='/'>
-        <a>Home</a>
+        <a
+          className='btn waves-effect waves-light'
+          style={{
+            margin: '10px auto',
+          }}>
+          Home
+        </a>
       </Link>
       <h1>{data.song.title}</h1>
       <LyricList lyrics={data.song.lyrics} songId={songId} />
@@ -41,6 +34,9 @@ function singleSong({ songId }) {
 }
 
 singleSong.getInitialProps = async ({ query: { songId } }) => {
+  if (!songId) {
+    return {};
+  }
   return { songId };
 };
 

@@ -25,8 +25,9 @@ export const typeDefs = gql`
   type Mutation {
     addSong(title: String!): Song
     addLyricToSong(content: String!, songId: ID!): Song
-    deleteLyric(lyricId: ID!): Song
+    deleteLyric(lyricId: ID!): Lyric
     deleteSong(songId: ID!): Song
     likeLyric(lyricId: ID!): Lyric
+    unlikeLyric(lyricId: ID!): Lyric
   }
 `;

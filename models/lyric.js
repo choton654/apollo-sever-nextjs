@@ -19,5 +19,19 @@ LyricSchema.statics.like = function (id) {
   });
 };
 
+LyricSchema.statics.unlike = function (id) {
+  const Lyric = mongoose.model('lyric');
+
+  return Lyric.findById(id).then((lyric) => {
+    if (lyric.likes === 0) {
+      return;
+    } else {
+      --lyric.likes;
+    }
+
+    return lyric.save();
+  });
+};
+
 const Lyric = mongoose.models.lyric || mongoose.model('lyric', LyricSchema);
 module.exports = Lyric;

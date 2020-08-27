@@ -1,22 +1,14 @@
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import React, { useState } from 'react';
-
-const ADD_LYRIC = gql`
-  mutation($content: String!, $songId: ID!) {
-    addLyricToSong(content: $content, songId: $songId) {
-      id
-      title
-      lyrics {
-        content
-      }
-    }
-  }
-`;
+import { ADD_LYRIC } from '../graphql/mutations';
 
 function AddLyric({ songId }) {
   const [content, setcontent] = useState('');
-  const [addLyricToSong, { data }] = useMutation(ADD_LYRIC);
-  console.log(data);
+  const [addLyricToSong, { data }] = useMutation(ADD_LYRIC, {
+    update: (cache, { data }) => {
+      console.log(data);
+    },
+  });
   return (
     <div>
       <form

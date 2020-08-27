@@ -1,16 +1,9 @@
-import { gql, useApolloClient } from '@apollo/client';
+import { useApolloClient } from '@apollo/client';
 import Link from 'next/link';
 import Router from 'next/router';
 import React, { useState } from 'react';
-
-const ADD_SONG = gql`
-  mutation($title: String!) {
-    addSong(title: $title) {
-      id
-      title
-    }
-  }
-`;
+import { ADD_SONG } from '../graphql/mutations';
+import { SongsQuery } from '../graphql/queries';
 
 function createSong() {
   const [state, setstate] = useState({
@@ -22,7 +15,13 @@ function createSong() {
   return (
     <div className='container'>
       <Link href='/'>
-        <a>Home</a>
+        <a
+          className='btn waves-effect waves-light'
+          style={{
+            margin: '10px auto',
+          }}>
+          Home
+        </a>
       </Link>
       <h1>Create New Song</h1>
       <form
@@ -31,18 +30,16 @@ function createSong() {
           client.mutate({
             variables: { title: state.title },
             mutation: ADD_SONG,
-            refetchQueries: [
-              {
-                query: gql`
-                  query SongsQuery {
-                    songs {
-                      id
-                      title
-                    }
-                  }
-                `,
-              },
-            ],
+            update: (cache, { data: { addSong } }) => {
+              console.log(addSong);
+              const data = cache.readQuery({ query: SongsQuery });
+              cache.writeQuery({
+                query: SongsQuery,
+                data: {
+                  songs: [...data.songs, addSong],
+                },
+              });
+            },
           });
           setstate({
             title: '',

@@ -1,23 +1,8 @@
-import { gql, useApolloClient, useQuery } from '@apollo/client';
+import { useApolloClient, useQuery } from '@apollo/client';
 import Link from 'next/link';
 import { initializeApollo } from '../apollo/client';
-
-const SongsQuery = gql`
-  query SongsQuery {
-    songs {
-      id
-      title
-    }
-  }
-`;
-
-const DELETE_SONG = gql`
-  mutation($songId: ID!) {
-    deleteSong(songId: $songId) {
-      title
-    }
-  }
-`;
+import { DELETE_SONG } from '../graphql/mutations';
+import { SongsQuery } from '../graphql/queries';
 
 const Index = () => {
   const { data, loading, error } = useQuery(SongsQuery);
@@ -28,8 +13,13 @@ const Index = () => {
 
   return (
     <div>
+      <h1>Make your dream songs</h1>
       <Link href='/createSong'>
-        <a className='btn-floating btn-large red right'>
+        <a
+          className='btn-floating btn-large red right'
+          style={{
+            marginLeft: '10px',
+          }}>
           <i className='material-icons'>add</i>
         </a>
       </Link>
@@ -37,7 +27,13 @@ const Index = () => {
         {
           <ul className='collection'>
             {data.songs.map((song) => (
-              <li className='collection-item' key={song.id}>
+              <li
+                className='collection-item'
+                key={song.id}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                }}>
                 <Link href={`/singleSong?songId=${song.id}`}>
                   <a>{song.title}</a>
                 </Link>
@@ -48,11 +44,15 @@ const Index = () => {
                     client.mutate({
                       variables: { songId: song.id },
                       mutation: DELETE_SONG,
-                      refetchQueries: [
-                        {
+                      update: (cache) => {
+                        const data = cache.readQuery({ query: SongsQuery });
+                        cache.writeQuery({
                           query: SongsQuery,
-                        },
-                      ],
+                          data: {
+                            songs: data.songs.filter((s) => s.id !== song.id),
+                          },
+                        });
+                      },
                     });
                   }}>
                   Delete

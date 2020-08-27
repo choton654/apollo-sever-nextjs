@@ -47,6 +47,9 @@ export const resolvers = {
     likeLyric: (parent, { lyricId }, content) => {
       return Lyric.like(lyricId);
     },
+    unlikeLyric: (parent, { lyricId }, content) => {
+      return Lyric.unlike(lyricId);
+    },
     deleteLyric: (parent, { lyricId }, content) => {
       return Lyric.deleteOne({ _id: lyricId });
     },
